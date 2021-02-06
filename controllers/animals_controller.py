@@ -2,13 +2,14 @@ from models.Animal import Animal
 
 from main import db
 from schemas.AnimalSchema import animalSchema, animalsSchema
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 animals = Blueprint('animals', __name__, url_prefix="/animals")
 
 @animals.route("/", methods=["GET"])
 def animal_index():
     animals = Animal.query.all()
-    return jsonify(animalsSchema.dump(animals))
+    #return jsonify(animalsSchema.dump(animals))
+    return render_template("animals_index.html", anims = animals)
 
 @animals.route("/", methods=["POST"])
 def animal_create():
@@ -28,8 +29,8 @@ def animal_create():
 @animals.route("/<int:id>", methods=["GET"])
 def animal_show(id):
     animal = Animal.query.get(id)
-    return jsonify(animalSchema.dump(animal))
-
+    #return jsonify(animalSchema.dump(animal))
+    return render_template("animal.html", anim = animal )
 
 @animals.route("/<int:id>", methods=["DELETE"])
 def animal_delete(id):

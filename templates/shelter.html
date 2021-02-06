@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block content%}        
+    <h3>{{shelt.name}}</h3>
+    <h4>Address: {{shelt.address}}</h4>
+    <h4>{{shelt.city}}</h4>
+    <h4>Email: {{shelt.email}}</h4>
+    <h4>Phone: {{shelt.phone}}</h4>
+    <a href="/shelters">Back</a>
+{% endblock %}

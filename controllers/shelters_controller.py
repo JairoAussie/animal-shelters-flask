@@ -3,14 +3,15 @@ from models.Animal import Animal
 from main import db
 from schemas.ShelterSchema import shelter_schema, shelters_schema
 from schemas.AnimalSchema import animalSchema, animalsSchema
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 
 shelters = Blueprint('shelters',__name__, url_prefix="/shelters")
 
 @shelters.route("/", methods=["GET"])
 def shelter_index():
     shelters = Shelter.query.all()
-    return jsonify(shelters_schema.dump(shelters))
+    #return jsonify(shelters_schema.dump(shelters))
+    return render_template("shelters_index.html", shelters = shelters)
     #rs = db.engine.execute('SELECT * FROM shelters')
     #return jsonify(shelters_schema.dump(rs))
 
@@ -36,14 +37,15 @@ def shelter_create():
 def shelter_show(id):
     #SELECT * FROM SHELTERS WHERE ID = id
     shelter = Shelter.query.get(id)
-    return jsonify(shelter_schema.dump(shelter))
+    #return jsonify(shelter_schema.dump(shelter))
+    return render_template("shelter.html", shelt = shelter )
 
 @shelters.route("/<int:id>/animals", methods=["GET"])
 def shelter_animals_show(id):
     #SELECT * FROM ANIMALS WHERE SHELTER_ID = id
     animals = Animal.query.filter_by(shelter_id=id)
-
-    return jsonify(animalsSchema.dump(animals))
+    return render_template("animals_index.html", anims = animals)
+    #return jsonify(animalsSchema.dump(animals))
 
 @shelters.route("/<int:id>", methods=["DELETE"])
 def shelter_delete(id):

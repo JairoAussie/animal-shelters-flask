@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block content%} 
+<h2>Shelters</h2>          
+    {% for shelter in shelters %}
+        <h3>{{shelter.name}}</h3>
+        <h4>{{shelter.city}}</h4>
+        <a href="{{ url_for('shelters.shelter_show', id=shelter.id) }}">More details</a>
+        <a href="{{ url_for('shelters.shelter_animals_show', id=shelter.id) }}" >See the animals</a>
+        <br>
+    {% endfor %}
+{% endblock %}

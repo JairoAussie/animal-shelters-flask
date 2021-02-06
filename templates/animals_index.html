@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block content%}        
+    {% for animal in anims %}
+        <h3>{{animal.name}}</h3>
+        <h4>{{animal.kind}}</h4>
+        <a href="{{ url_for('animals.animal_show', id=animal.id) }}">More details</a>
+        <br>
+    {% endfor %}
+{% endblock %}
