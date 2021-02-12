@@ -1,19 +1,29 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 from flask import Flask 
-app = Flask(__name__)
-
-from database import init_db
-db = init_db(app)
-
+from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-mar = Marshmallow(app)
 
-from commands import db_commands
-app.register_blueprint(db_commands)
+db = SQLAlchemy()
+mar = Marshmallow()
 
-from controllers import registerable_controllers
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object("default_settings.app_config")
 
-for controller in registerable_controllers:
-    app.register_blueprint(controller)
+    db.init_app(app)
+    mar.init_app(app)
+
+    from commands import db_commands
+    app.register_blueprint(db_commands)
+
+    from controllers import registerable_controllers
+
+    for controller in registerable_controllers:
+        app.register_blueprint(controller)
+    
+    return app
 
 
 
