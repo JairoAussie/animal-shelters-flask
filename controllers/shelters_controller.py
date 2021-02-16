@@ -4,6 +4,7 @@ from main import db
 from schemas.ShelterSchema import shelter_schema, shelters_schema
 from schemas.AnimalSchema import animalSchema, animalsSchema
 from flask import Blueprint, request, jsonify, render_template
+from flask_jwt_extended import jwt_required
 
 shelters = Blueprint('shelters',__name__, url_prefix="/shelters")
 
@@ -16,6 +17,7 @@ def shelter_index():
     #return jsonify(shelters_schema.dump(rs))
 
 @shelters.route("/", methods=["POST"])
+@jwt_required
 def shelter_create():
 
     shelter_fields = shelter_schema.load(request.json)
@@ -48,6 +50,7 @@ def shelter_animals_show(id):
     #return jsonify(animalsSchema.dump(animals))
 
 @shelters.route("/<int:id>", methods=["DELETE"])
+@jwt_required
 def shelter_delete(id):
     shelter = Shelter.query.get(id)
     db.session.delete(shelter)
@@ -55,6 +58,7 @@ def shelter_delete(id):
     return jsonify(shelter_schema.dump(shelter))
 
 @shelters.route("/<int:id>", methods=["PUT","PATCH"])
+@jwt_required
 def shelter_update(id):
     shelters = Shelter.query.filter_by(id=id)
     shelter_fields = shelter_schema.load(request.json)
