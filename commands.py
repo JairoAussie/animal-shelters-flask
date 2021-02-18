@@ -15,8 +15,22 @@ def create_db():
 
 @db_commands.cli.command("seed")
 def seed_db():
+    from main import bcrypt
     from models.Shelter import Shelter
     from models.Animal import Animal
+    from models.User import User
+
+    u1 = User()
+    u1.username = "Jairo"
+    u1.password = bcrypt.generate_password_hash("123456").decode("utf-8")
+    db.session.add(u1)
+
+    u2 = User()
+    u2.username = "Ignacio"
+    u2.password = bcrypt.generate_password_hash("123456").decode("utf-8")
+    db.session.add(u2)
+
+    db.session.commit()
     
     s1 = Shelter()
     s1.name = "Brisbane Shelter"
@@ -24,6 +38,7 @@ def seed_db():
     s1.email = "brisbaneshelter@gmail.com"
     s1.city = "Brisbane"
     s1.phone = "1800011122"
+    s1.user_id = 1
     db.session.add(s1)
 
     s2 = Shelter()
@@ -32,6 +47,7 @@ def seed_db():
     s2.email = "sydneyshelter@gmail.com"
     s2.city = "Sydney"
     s2.phone = "180024135122"
+    s2.user_id = 2
     db.session.add(s2)
 
     db.session.commit()    

@@ -9,8 +9,8 @@ animals = Blueprint('animals', __name__, url_prefix="/animals")
 @animals.route("/", methods=["GET"])
 def animal_index():
     animals = Animal.query.all()
-    #return jsonify(animalsSchema.dump(animals))
-    return render_template("animals_index.html", anims = animals)
+    return jsonify(animalsSchema.dump(animals))
+    #return render_template("animals_index.html", anims = animals)
 
 @animals.route("/", methods=["POST"])
 @jwt_required
