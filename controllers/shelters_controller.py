@@ -24,7 +24,7 @@ def shelter_index():
 def shelter_create(user=None):
 
     shelter = Shelter.query.filter_by(user_id=user.id).first()
-    print (shelter)
+    #print (shelter)
     if shelter:
         return abort(400, description= "Not authorised to create more than one shelter")
     print(request.json)
@@ -36,7 +36,7 @@ def shelter_create(user=None):
     new_shelter.phone = shelter_fields["phone"]
     new_shelter.address = shelter_fields["address"]
     new_shelter.city = shelter_fields["city"]
-    new_shelter.user_id = shelter_fields["user_id"]
+    new_shelter.user_id = user.id
 
     #add a new shelter to the db
     db.session.add(new_shelter)
@@ -48,15 +48,15 @@ def shelter_create(user=None):
 def shelter_show(id):
     #SELECT * FROM SHELTERS WHERE ID = id
     shelter = Shelter.query.get(id)
-    #return jsonify(shelter_schema.dump(shelter))
-    return render_template("shelter.html", shelt = shelter )
+    return jsonify(shelter_schema.dump(shelter))
+    #return render_template("shelter.html", shelt = shelter )
 
 @shelters.route("/<int:id>/animals", methods=["GET"])
 def shelter_animals_show(id):
     #SELECT * FROM ANIMALS WHERE SHELTER_ID = id
     animals = Animal.query.filter_by(shelter_id=id)
-    return render_template("animals_index.html", anims = animals)
-    #return jsonify(animalsSchema.dump(animals))
+    #return render_template("animals_index.html", anims = animals)
+    return jsonify(animalsSchema.dump(animals))
 
 @shelters.route("/<int:id>", methods=["DELETE"])
 @jwt_required
@@ -80,8 +80,10 @@ def shelter_delete(id, user=None):
 
 @shelters.route("/<int:id>", methods=["PUT","PATCH"])
 @jwt_required
-def shelter_update(id):
-    shelters = Shelter.query.filter_by(id=id)
+@verify_user
+def shelter_update(id, user=None):
+    shelter = Shelter.query.filter_by(id=id, user_id=user.id).first()
+    #shelters = Shelter.query.filter_by(id=id)
     shelter_fields = shelter_schema.load(request.json)
     shelters.update(shelter_fields)
     db.session.commit()

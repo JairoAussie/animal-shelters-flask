@@ -9,4 +9,8 @@ class Shelter(db.Model):
     address = db.Column(db.String())
     city = db.Column(db.String())
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    animals = db.relationship("Animal", backref="Shelter", cascade="all , delete" )
+    animals = db.relationship(
+        "Animal",
+        backref="shelter",
+        cascade="all, delete"
+    )
