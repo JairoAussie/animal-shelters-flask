@@ -3,6 +3,7 @@ import os
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = "learning jwt"
+    SECRET_KEY = "learning flask login"
 
     @property
     def SQLALCHEMY_DATABASE_URI(self):

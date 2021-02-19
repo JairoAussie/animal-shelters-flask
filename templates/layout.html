@@ -11,6 +11,13 @@
             <nav>
                 <a href="/shelters">Home</a>
                 <a href="/animals">All the animals!</a>
+                {% if current_user.is_authenticated %}
+                    <a>{{ current_user.username }}</a>
+                    <a href="/logout">Log out</a>
+                {% else %}
+                    <a href="/signup">Sign up</a>
+                    <a href="/login">Log in</a>
+                {% endif %}
             </nav>
         </header>
         <div>
