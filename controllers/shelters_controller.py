@@ -13,8 +13,8 @@ shelters = Blueprint('shelters',__name__, url_prefix="/shelters")
 @shelters.route("/", methods=["GET"])
 def shelter_index():
     shelters = Shelter.query.all()
-    return jsonify(shelters_schema.dump(shelters))
-    #return render_template("shelters_index.html", shelters = shelters)
+    #return jsonify(shelters_schema.dump(shelters))
+    return render_template("shelters_index.html", shelters = shelters)
     #rs = db.engine.execute('SELECT * FROM shelters')
     #return jsonify(shelters_schema.dump(rs))
 
@@ -27,7 +27,7 @@ def shelter_create(user=None):
     #print (shelter)
     if shelter:
         return abort(400, description= "Not authorised to create more than one shelter")
-    print(request.json)
+    #print(request.json)
     shelter_fields = shelter_schema.load(request.json)
     #create a new Shelter object, with the data received in the request
     new_shelter = Shelter()
@@ -48,15 +48,15 @@ def shelter_create(user=None):
 def shelter_show(id):
     #SELECT * FROM SHELTERS WHERE ID = id
     shelter = Shelter.query.get(id)
-    return jsonify(shelter_schema.dump(shelter))
-    #return render_template("shelter.html", shelt = shelter )
+    #return jsonify(shelter_schema.dump(shelter))
+    return render_template("shelter.html", shelt = shelter )
 
 @shelters.route("/<int:id>/animals", methods=["GET"])
 def shelter_animals_show(id):
     #SELECT * FROM ANIMALS WHERE SHELTER_ID = id
     animals = Animal.query.filter_by(shelter_id=id)
-    #return render_template("animals_index.html", anims = animals)
-    return jsonify(animalsSchema.dump(animals))
+    return render_template("animals_index.html", anims = animals)
+    #return jsonify(animalsSchema.dump(animals))
 
 @shelters.route("/<int:id>", methods=["DELETE"])
 @jwt_required

@@ -28,6 +28,14 @@ class ProductionConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
+    @property
+    def SQLALCHEMY_DATABASE_URI(self):
+        value = os.environ.get("DB_URI_TEST")
+
+        if not value:
+            raise ValueError("DB_URI is not set")
+
+        return value
 
 environment = os.environ.get("FLASK_ENV")
 
