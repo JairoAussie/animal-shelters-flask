@@ -6,5 +6,8 @@
     <h4>{{shelt.city}}</h4>
     <h4>Email: {{shelt.email}}</h4>
     <h4>Phone: {{shelt.phone}}</h4>
+    {% if current_user.is_authenticated and current_user.id == shelt.user.id %}
+        <a href="{{ url_for('shelters.shelter_delete', id=shelt.id) }}"><button>Delete shelter</button></a>
+    {% endif%}
     <a href="/shelters">Back</a>
 {% endblock %}

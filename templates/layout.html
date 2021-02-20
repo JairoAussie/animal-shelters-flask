@@ -12,6 +12,7 @@
                 <a href="/shelters">Home</a>
                 <a href="/animals">All the animals!</a>
                 {% if current_user.is_authenticated %}
+                    <a href="/shelters/new">Create a new shelter</a>
                     <a>{{ current_user.username }}</a>
                     <a href="/logout">Log out</a>
                 {% else %}
