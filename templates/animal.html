@@ -5,6 +5,11 @@
     <h4>{{anim.kind}}</h4>
     <h4>{{anim.breed}}</h4>
     <h4>{{anim.age}}</h4>
+    {% if current_user.is_authenticated and current_user.id == anim.shelter.user.id %}
+        
+        <a href="{{ url_for('animals.modify_animal', id=anim.id) }}"><button>Update animal's data</button></a>
+        <a href="{{ url_for('animals.animal_delete', id=anim.id) }}"><button>Delete</button></a>
+    {% endif%}
     <a href="/animals">Back</a>
     
 {% endblock %}

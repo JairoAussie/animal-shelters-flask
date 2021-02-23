@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div>
+        <h3>Add animal</h3>
+        <div>
+            <form action="{{ url_for('animals.animal_create') }}" method="POST">
+                <input type="text" name="name" placeholder="Name" autofocus="">
+                <input type="text" name="kind" placeholder="Kind">
+                <input type="text" name="breed" placeholder="Breed">
+                <input type="text" name="age" placeholder="Age">
+                <button>Add animal</button>
+            </form>
+            <a href="shelters_index.html"><button>Cancel</button></a>
+        </div>
+    </div>
+{% endblock %}
