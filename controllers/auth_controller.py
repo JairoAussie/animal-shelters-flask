@@ -22,7 +22,6 @@ def auth_register():
     user = User.query.filter_by(username=username).first()
     if user:
         return abort(400, description="user already exists")
-
     user = User()
     #user.username = user_fields["username"]
     #user.password = bcrypt.generate_password_hash(user_fields["password"]).decode("utf-8")
@@ -53,7 +52,6 @@ def auth_login():
         return abort(401, description="Incorrect password")
     #print(current_user.username)
     login_user(user)
-    print(current_user.username)
     #expiry = timedelta(days=1)
     #access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
     #return jsonify({"token": access_token})

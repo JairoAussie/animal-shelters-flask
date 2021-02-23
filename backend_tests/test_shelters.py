@@ -67,37 +67,34 @@ class TestShelters(unittest.TestCase):
     #POST method in shelters
     def test_post_shelter_create(self):
         #register and login a user
-        response = self.client.post("/auth/register", 
-        json= {
-            "username": "tester",
-            "password": "123456"
+        response = self.client.post('/auth/register', data={
+            'username': 'tester',
+            'password': '123456'
         })
-        #login the user
-        response = self.client.post("/auth/login", 
-        json= {
-            "username": "tester",
-            "password": "123456"
-        })
-        # get the response (token)
-        data = response.get_json()
-        # store the token to send it in the POST shelter
-        headers_data = {
-            'Authorization': f"Bearer {data['token']}"
-        }
+        #print(response.data)
+        self.assertEqual(response.status_code, 302)
+        response = self.client.post('/auth/login', data={
+            'username': 'tester',
+            'password': '123456'
+        }, follow_redirects=True)
+        #print(response.data)
+        self.assertEqual(response.status_code, 200)
+
         #creating the data for the shelter
         shelter_data = {
-            "name" : "Melbourne Shelter",
+            "name": "Melbourne Shelter",
             "address": "Main Street",
             "city": "Melbourne",
             "phone": "1800333444",
             "email": "mlb@mlbshelter.com"
         }
-        # the POST request with the url, the shelter data and the token
+        #the POST request with the url, the shelter data and the token
         response = self.client.post("shelters/",
-        json = shelter_data,
-        headers = headers_data)
+        data = shelter_data)
+        #print(response)
         #get the JSON object of the new shelter
         data = response.get_json()
+        #print(data)
         #check if we now have a shelter with that ID in the shelters table
         shelter = Shelter.query.get(data["id"])
         #test the 200 status
@@ -108,82 +105,64 @@ class TestShelters(unittest.TestCase):
     
     #POST method in /shelters not allowed
     def test_post_shelter_create_not_allowed(self):
-        #login a user that already exists and get the token
-        #login the user
-        response = self.client.post("/auth/login", 
-        json= {
-            "username": "Jairo",
-            "password": "123456"
-        })
-        # get the response (token)
-        data = response.get_json()
-        # store the token to send it in the POST shelter
-        headers_data = {
-            'Authorization': f"Bearer {data['token']}"
-        }
+        #login the user that already owns a shelter
+        response = self.client.post('/auth/login', data={
+            'username': 'Jairo',
+            'password': '123456'
+        }, follow_redirects=True)
+        #print(response.data)
+        self.assertEqual(response.status_code, 200)
+
         #creating the data for the shelter
         shelter_data = {
-            "name" : "Melbourne Shelter",
+            "name": "Melbourne Shelter",
             "address": "Main Street",
             "city": "Melbourne",
             "phone": "1800333444",
             "email": "mlb@mlbshelter.com"
         }
-        # the POST request with the url, the shelter data and the token
+        #the POST request with the url, the shelter data and the token
         response = self.client.post("shelters/",
-        json = shelter_data,
-        headers = headers_data)
+        data = shelter_data)
 
         #test a 400 status, a user that already has a shelter cannot post a new one
         self.assertEqual(response.status_code, 400)
 
-    #DELETE method in shelters/id, not allowed to delete
+    # #DELETE method in shelters/id, not allowed to delete
     def test_delete_shelter_not_allowed(self):
         #register and login a user
-        response = self.client.post("/auth/register", 
-        json= {
-            "username": "tester",
-            "password": "123456"
+        response = self.client.post('/auth/register', data={
+            'username': 'tester',
+            'password': '123456'
         })
-        #login the user
-        response = self.client.post("/auth/login", 
-        json= {
-            "username": "tester",
-            "password": "123456"
-        })
-        # get the response (token)
-        data = response.get_json()
-        # store the token to send it in the POST shelter
-        headers_data = {
-            'Authorization': f"Bearer {data['token']}"
-        }
+        
+        self.assertEqual(response.status_code, 302)
+        response = self.client.post('/auth/login', data={
+            'username': 'tester',
+            'password': '123456'
+        }, follow_redirects=True)
+        
+        self.assertEqual(response.status_code, 200)
+        #get the first shelter
         shelter = Shelter.query.first()
-        response = self.client.delete(f"shelters/{shelter.id}",
-        json = data,
-        headers = headers_data)
+        #try to delete it
+        response = self.client.get(f"/shelters/delete/{shelter.id}")
         #test a 400 status, a user is not the owner of the shelter cannot delete it
         self.assertEqual(response.status_code, 400)
 
-    #DELETE method on /shelters/id allowed
+    # #DELETE method on /shelters/id allowed
     def test_delete_shelter_allowed(self):
         #login a user that already exists and get the token
-        #login the user
-        response = self.client.post("/auth/login", 
-        json= {
-            "username": "Jairo",
-            "password": "123456"
-        })
-        # get the response (token)
-        data = response.get_json()
-        # store the token to send it in the POST shelter
-        headers_data = {
-            'Authorization': f"Bearer {data['token']}"
-        }
+        #login the user that already owns a shelter
+        response = self.client.post('/auth/login', data={
+            'username': 'Jairo',
+            'password': '123456'
+        }, follow_redirects=True)
+        #print(response.data)
+        self.assertEqual(response.status_code, 200)
 
         shelter = Shelter.query.first()
-        response = self.client.delete(f"shelters/{shelter.id}",
-        json = data,
-        headers = headers_data)
+        response = self.client.get(f"shelters/delete/{shelter.id}")
         #test the OK status
         self.assertEqual(response.status_code, 200)
         #query to the shelter we deleted

@@ -5,7 +5,6 @@
         <h3>Create shelter</h3>
         <div>
             <form action="{{ url_for('shelters.shelter_create') }}" method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input type="text" name="name" placeholder="Name" autofocus="">
                 <input type="text" name="address" placeholder="Address">
                 <input type="text" name="city" placeholder="City">
@@ -13,6 +12,7 @@
                 <input type="text" name="phone" placeholder="Phone">
                 <button>Create shelter</button>
             </form>
+            <a href="shelters_index.html"><button>Cancel</button></a>
         </div>
     </div>
 {% endblock %}

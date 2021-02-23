@@ -14,8 +14,8 @@ shelters = Blueprint('shelters',__name__, url_prefix="/shelters")
 @shelters.route("/", methods=["GET"])
 def shelter_index():
     shelters = Shelter.query.all()
-    #return jsonify(shelters_schema.dump(shelters))
-    return render_template("shelters_index.html", shelters = shelters)
+    return jsonify(shelters_schema.dump(shelters))
+    #return render_template("shelters_index.html", shelters = shelters)
     #rs = db.engine.execute('SELECT * FROM shelters')
     #return jsonify(shelters_schema.dump(rs))
 
@@ -50,8 +50,8 @@ def shelter_create():
     db.session.add(new_shelter)
     db.session.commit()
 
-    #return jsonify(shelter_schema.dump(new_shelter))
-    return redirect(url_for('shelters.shelter_index'))
+    return jsonify(shelter_schema.dump(new_shelter))
+    #return redirect(url_for('shelters.shelter_index'))
 # @shelters.route("/", methods=["POST"])
 # @jwt_required
 # @verify_user
@@ -82,15 +82,15 @@ def shelter_create():
 def shelter_show(id):
     #SELECT * FROM SHELTERS WHERE ID = id
     shelter = Shelter.query.get(id)
-    #return jsonify(shelter_schema.dump(shelter))
-    return render_template("shelter.html", shelt = shelter )
+    return jsonify(shelter_schema.dump(shelter))
+    #return render_template("shelter.html", shelt = shelter )
 
 @shelters.route("/<int:id>/animals", methods=["GET"])
 def shelter_animals_show(id):
     #SELECT * FROM ANIMALS WHERE SHELTER_ID = id
     animals = Animal.query.filter_by(shelter_id=id)
-    return render_template("animals_index.html", anims = animals)
-    #return jsonify(animalsSchema.dump(animals))
+    #return render_template("animals_index.html", anims = animals)
+    return jsonify(animalsSchema.dump(animals))
 
 #@shelters.route("/<int:id>", methods=["DELETE"])
 @shelters.route("/delete/<int:id>", methods=["GET"])
@@ -110,21 +110,38 @@ def shelter_delete(id):
 
     db.session.delete(shelter)
     db.session.commit()
-    #return jsonify(shelter_schema.dump(shelter))
-    return redirect(url_for('shelters.shelter_index'))
+    return jsonify(shelter_schema.dump(shelter))
+    #return redirect(url_for('shelters.shelter_index'))
 
-@shelters.route("/<int:id>", methods=["PUT","PATCH"])
-@jwt_required
-@verify_user
-def shelter_update(id, user=None):
-    shelter = Shelter.query.filter_by(id=id, user_id=user.id).first()
-    #shelters = Shelter.query.filter_by(id=id)
-    shelter_fields = shelter_schema.load(request.json)
-    shelters.update(shelter_fields)
+#@shelters.route("/<int:id>", methods=["PUT","PATCH"]) same resason as delete method
+#@jwt_required
+#@verify_user
+@shelters.route("/update/<int:id>", methods=["POST"])
+@login_required
+def shelter_update(id):
+    #make sure the selected shelter is owned by the logged in user
+    shelter = Shelter.query.filter_by(id=id, user_id=current_user.id).first()
+    if not shelter:
+        return abort(400, description="Not authorized to delete other people's shelters")
+
+    #start updating the values of the shelter according to the form
+    shelter.name = request.form.get("name")
+    shelter.email = request.form.get("email")
+    shelter.phone = request.form.get("phone")
+    shelter.address = request.form.get("address")
+    shelter.city = request.form.get("city")
+    shelter.user_id = current_user.id
+    #save the changes
     db.session.commit()
     return jsonify(shelter_schema.dump(shelters[0]))
+    #return redirect(url_for('shelters.shelter_index'))
 
 
 @shelters.route("/new", methods=["GET"])
 def new_shelter():
     return render_template("new_shelter.html")
+
+@shelters.route("/modify/<int:id>", methods=["GET"])
+def modify_shelter(id):
+    shelter = shelter = Shelter.query.get(id)
+    return render_template("modify_shelter.html", shelter=shelter)
