@@ -83,3 +83,4 @@ def seed_db():
     db.session.add(a4)
 
     db.session.commit()
+    print("Tables dropped")
