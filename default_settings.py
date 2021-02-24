@@ -2,7 +2,7 @@ import os
 
 class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    JWT_SECRET_KEY = "learning jwt"
+    #JWT_SECRET_KEY = "learning jwt"
     SECRET_KEY = "learning flask login"
 
     @property
@@ -19,11 +19,11 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     @property
-    def JWT_SECRET_KEY(self):
-        value = os.environ.get("JWT_SECRET_KEY")
+    def SECRET_KEY(self):
+        value = os.environ.get("SECRET_KEY")
 
         if not value:
-            raise ValueError("JWT Secret Key is not set")
+            raise ValueError("Secret Key is not set")
 
         return value
 

@@ -3,10 +3,14 @@ from schemas.UserSchema import user_schema, users_schema
 from main import db
 from flask import Blueprint, request, jsonify, abort, render_template, redirect, url_for
 from main import bcrypt
-from flask_jwt_extended import create_access_token
+# from flask_jwt_extended import create_access_token
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import timedelta
 auth = Blueprint('auth', __name__,)
+
+@auth.route("/", methods=["GET"])
+def main_page():
+    return redirect(url_for('shelters.shelter_index'))
 
 @auth.route("/auth/register", methods=["POST"])
 def auth_register():

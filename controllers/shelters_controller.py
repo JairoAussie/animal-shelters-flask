@@ -5,8 +5,8 @@ from main import db
 from schemas.ShelterSchema import shelter_schema, shelters_schema
 from schemas.AnimalSchema import animalSchema, animalsSchema
 from flask import Blueprint, request, jsonify, render_template, abort, redirect, url_for
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from services.auth_service import verify_user
+# from flask_jwt_extended import jwt_required, get_jwt_identity
+# from services.auth_service import verify_user
 from flask_login import login_required, current_user
 
 shelters = Blueprint('shelters',__name__, url_prefix="/shelters")
