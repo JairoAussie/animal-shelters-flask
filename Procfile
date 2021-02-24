@@ -1,1 +1,0 @@
-web: gunicorn "main:create_app()" --timeout 30
