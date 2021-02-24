@@ -1,1 +1,1 @@
-web: gunicorn "main:create_app()" --preload --timeout 30
+web: gunicorn "main:create_app()"
